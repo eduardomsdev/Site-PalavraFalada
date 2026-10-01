@@ -9,7 +9,7 @@ export const APP_NAME = 'Palavra Falada';
 // sempre aponta para o release mais recente — basta publicar um release novo
 // com um arquivo de MESMO NOME e o site já baixa a versão nova.
 export const DOWNLOAD_URL =
-  'https://github.com/[USUARIO]/[REPOSITORIO]/releases/latest/download/palavra-falada.apk';
+  'https://github.com/Its8or/PalavraFalada-CollegeProject/releases/latest/download/palavra-falada.apk';
 
 // Paleta tirada das telas do app (pasta designer/).
 // Os mesmos tons estão no CSS como variáveis (--blue, --yellow...).
