@@ -1,2 +1,32 @@
-node_modules
-dist
+# Dependências (recriadas com `npm install`)
+node_modules/
+
+# Build (recriado com `npm run build`)
+dist/
+dist-ssr/
+.vite/
+
+# Variáveis de ambiente / segredos — nunca suba isso
+.env
+.env.*
+!.env.example
+*.local
+
+# Pasta temporária do gerador de áudios (scripts/gerar-audios.mjs)
+public/audio/.tmp/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editores (mantém só as extensões recomendadas do VS Code)
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
