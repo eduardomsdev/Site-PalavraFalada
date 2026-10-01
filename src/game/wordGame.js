@@ -28,7 +28,9 @@ const LOOSE_SCALE = 1.55; // letras soltas: grandes, fáceis de tocar (> 48px)
 const PLACED_SCALE = 1.25; // letras já no livro
 const SLOT_GAP = 0.92; // distância entre os espaços da palavra
 const SLOT_Y = -0.1; // altura dos espaços na página
-const SLOT_Z = 0.34; // um pouquinho acima das páginas
+// Acima das páginas: as que viraram ficam em leque e levantam até ~0,55
+// na borda esquerda; com menos que isso, elas tampam o 1º espaço.
+const SLOT_Z = 0.6;
 
 /** Espaço vazio da palavra: quadrado tracejado desenhado num canvas. */
 let slotAssets = null;
