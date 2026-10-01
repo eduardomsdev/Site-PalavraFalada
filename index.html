@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#bfe2f7" />
+    <meta name="description" content="Palavra Falada: app gratuito para praticar a leitura em voz alta. O professor monta a lista de palavras, o aluno entra pelo QR Code, ouve e repete." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>" />
+    <!-- Nunito: fonte arredondada parecida com a do app. display=swap mostra o texto
+         na fonte do sistema enquanto ela baixa (não trava a página em internet lenta). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    <title>Palavra Falada — Ouvir, repetir e aprender a ler</title>
+  </head>
+  <body>
+    <!-- Ícones desenhados uma vez só. Cada <svg><use href="#i-..."/></svg> reaproveita um deles. -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+        <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14a5 5 0 0 1 5 5.5"/></symbol>
+        <symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM20 14v1.5M14 20h1.5" stroke-linecap="round"/></symbol>
+        <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+        <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+        <symbol id="i-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/></symbol>
+        <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 8h3.5l2-3h7l2 3H21v11H3z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+        <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="currentColor"/></symbol>
+        <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3zM21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/></symbol>
+        <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.3a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol>
+        <symbol id="i-unlock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.7"/></symbol>
+        <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+        <symbol id="i-android" viewBox="0 0 24 24"><path fill="currentColor" d="M6 18c0 .55.45 1 1 1h1v3.5a1.5 1.5 0 0 0 3 0V19h2v3.5a1.5 1.5 0 0 0 3 0V19h1c.55 0 1-.45 1-1V8H6zM3.5 8A1.5 1.5 0 0 0 2 9.5v7a1.5 1.5 0 0 0 3 0v-7A1.5 1.5 0 0 0 3.5 8m17 0A1.5 1.5 0 0 0 19 9.5v7a1.5 1.5 0 0 0 3 0v-7A1.5 1.5 0 0 0 20.5 8m-4.97-5.84 1.3-1.3a.5.5 0 0 0-.71-.71l-1.48 1.48A5.9 5.9 0 0 0 12 1c-.96 0-1.86.23-2.66.63L7.85.15a.5.5 0 0 0-.71.71l1.31 1.31A5.97 5.97 0 0 0 6 7h12c0-1.99-.97-3.75-2.47-4.84M10 5H9V4h1zm5 0h-1V4h1z"/></symbol>
+        <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18h2"/></symbol>
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z" fill="currentColor"/></symbol>
+        <symbol id="i-arrow-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+        <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></symbol>
+        <symbol id="i-logo" viewBox="0 0 64 58">
+          <g fill="none" stroke="#f6b81a" stroke-width="4" stroke-linecap="round"><path d="M27.8 19.8A6 6 0 0 1 36.2 19.8"/><path d="M24.2 16.2A11 11 0 0 1 39.8 16.2"/><path d="M20.7 12.7A16 16 0 0 1 43.3 12.7"/></g>
+          <path d="M32 30C26 26 18 26 10 28V50C18 48 26 48 32 52Z" fill="#4a95e6"/><path d="M32 30C38 26 46 26 54 28V50C46 48 38 48 32 52Z" fill="#2a6fc9"/>
+          <path d="M6 31V54C16 52 26 52 32 55 38 52 48 52 58 54V31" fill="none" stroke="#1b3f73" stroke-width="3" stroke-linejoin="round"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <main id="app">
+      <!-- ============ 1. ABERTURA (livro 3D) ============ -->
+      <section id="stage" class="stage" aria-labelledby="hero-title">
+        <svg class="waves waves--top" viewBox="0 0 360 90" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 0H360V50C280 22 180 24 100 52 60 66 25 66 0 58Z" fill="#d7eefb" />
+          <path d="M0 0H360V32C270 8 170 12 90 38 50 50 20 48 0 42Z" fill="#bfe2f7" />
+        </svg>
+        <svg class="waves waves--bottom" viewBox="0 0 360 90" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 90H360V34C290 60 200 64 120 40 70 26 30 30 0 44Z" fill="#d7eefb" />
+          <path d="M0 90H360V56C280 76 200 80 130 62 80 50 35 54 0 66Z" fill="#bfe2f7" />
+        </svg>
+
+        <!-- O canvas do Three.js é inserido aqui -->
+        <div id="canvas-holder" class="canvas-holder" aria-hidden="true"></div>
+
+        <header class="topbar">
+          <div class="brand">
+            <svg class="brand__logo" aria-hidden="true"><use href="#i-logo" /></svg>
+            <span class="brand__name">Palavra<br />Falada</span>
+          </div>
+          <button id="skip-btn" class="btn-skip" type="button" aria-label="Pular abertura">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l9 7-9 7zM13 5l7 7-7 7z" fill="currentColor" /><rect x="19" y="5" width="2.5" height="14" rx="1" fill="currentColor" /></svg>
+            <span>Pular</span>
+          </button>
+        </header>
+
+        <!-- Parte de baixo do palco: o jogo e o texto do site se revezam aqui -->
+        <div class="stage-bottom">
+          <div class="hero-copy" data-speak-scope>
+            <div>
+              <h1 id="hero-title" class="hero-copy__title" data-speak-text>Aprender a ler começa por <span class="hl">ouvir</span>.</h1>
+              <p class="hero-copy__sub" data-speak-text>Ouça a palavra, repita em voz alta e pratique a leitura.</p>
+            </div>
+            <div class="hero-copy__actions">
+              <button id="play-btn" class="btn btn--primary btn--play" type="button" aria-label="Jogar: monte uma palavra">
+                <svg aria-hidden="true"><use href="#i-play" /></svg>
+                <span class="btn__label">Jogar<small>monte uma palavra</small></span>
+              </button>
+              <button class="btn-speak btn-speak--lg" type="button" aria-label="Ouvir o título"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+              <a class="btn btn--secondary" href="#o-que-e">
+                Conhecer o app
+                <svg aria-hidden="true"><use href="#i-arrow-down" /></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="game-panel">
+            <div class="game-picture" role="img" aria-label="Casa">
+              <span class="game-picture__emoji" aria-hidden="true">🏠</span>
+            </div>
+            <button class="btn-speak btn-speak--lg game-listen" type="button" aria-label="Ouvir a palavra Casa" data-speak="Casa">
+              <svg aria-hidden="true"><use href="#i-speaker" /></svg>
+            </button>
+            <ol class="game-progress" aria-label="Palavra 1 de 3">
+              <li class="is-current"></li>
+              <li></li>
+              <li></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Mãozinha que mostra onde tocar (posicionada pelo JavaScript) -->
+        <div class="hand-hint" aria-hidden="true" hidden><span>👆</span></div>
+      </section>
+
+      <!-- ============ 2. O QUE É ============ -->
+      <section id="o-que-e" class="section" aria-labelledby="o-que-e-title">
+        <div class="container">
+          <h2 id="o-que-e-title" class="section__title"><span class="light">O que é o</span> Palavra Falada</h2>
+
+          <div class="card card--intro card--grid card--no-icon" data-speak-scope>
+            <p class="card__head" data-speak-text>É um aplicativo para <strong>praticar a leitura em voz alta</strong>.</p>
+            <button class="btn-speak" type="button" aria-label="Ouvir: o que é o Palavra Falada"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+            <p class="card__text" data-speak-text>O professor monta a lista de palavras da turma. O aluno ouve cada palavra falada pelo celular e repete em voz alta.</p>
+          </div>
+
+          <ul class="chips" aria-label="Destaques">
+            <li class="chip"><svg aria-hidden="true"><use href="#i-unlock" /></svg>Aluno não precisa de conta</li>
+            <li class="chip"><svg aria-hidden="true"><use href="#i-qr" /></svg>Entra na turma pelo QR Code</li>
+            <li class="chip"><svg aria-hidden="true"><use href="#i-speaker" /></svg>Voz em português do Brasil</li>
+            <li class="chip"><svg aria-hidden="true"><use href="#i-android" /></svg>Grátis para Android</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ 3. COMO FUNCIONA ============ -->
+      <section id="como-funciona" class="section section--tint" aria-labelledby="como-funciona-title">
+        <div class="container container--wide">
+          <h2 id="como-funciona-title" class="section__title"><span class="light">Como</span> funciona</h2>
+
+          <div class="tracks">
+            <div class="track">
+              <h3 class="track__title"><svg aria-hidden="true"><use href="#i-book" /></svg>Para o professor</h3>
+              <ol class="steps">
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--blue"><svg aria-hidden="true"><use href="#i-user" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 1</span>
+                    <h4 data-speak-text>Crie sua conta</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: crie sua conta"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>Faça o cadastro e entre com seu nome e senha.</p>
+                </li>
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--orange"><svg aria-hidden="true"><use href="#i-qr" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 2</span>
+                    <h4 data-speak-text>Monte a turma</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: monte a turma"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>Crie uma turma, como “3º ano B” ou “EJA Noite”. Ela ganha um QR Code e um código curto, como <strong class="code">7X9K2A</strong>. Dá para mostrar em tela cheia e projetar na lousa.</p>
+                </li>
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--blue"><svg aria-hidden="true"><use href="#i-pencil" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 3</span>
+                    <h4 data-speak-text>Cadastre as palavras</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: cadastre as palavras"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>Cada tarefa é uma palavra para praticar: BOLA, CASA, GATO… Antes de passar para a turma, toque e ouça a pronúncia — é o mesmo áudio que o aluno vai ouvir.</p>
+                </li>
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--orange"><svg aria-hidden="true"><use href="#i-eye" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 4</span>
+                    <h4 data-speak-text>Acompanhe a turma</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: acompanhe a turma"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>Veja quem já entrou. Edite ou exclua turmas e palavras quando precisar.</p>
+                </li>
+              </ol>
+            </div>
+
+            <div class="track">
+              <h3 class="track__title"><svg aria-hidden="true"><use href="#i-users" /></svg>Para o aluno</h3>
+              <ol class="steps">
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--green"><svg aria-hidden="true"><use href="#i-enter" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 1</span>
+                    <h4 data-speak-text>Toque em “Sou aluno”</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: toque em sou aluno"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>Não precisa criar conta nem lembrar senha.</p>
+                </li>
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--yellow"><svg aria-hidden="true"><use href="#i-camera" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 2</span>
+                    <h4 data-speak-text>Aponte a câmera para o QR Code</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: aponte a câmera para o QR Code"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>Ou digite o código que o professor mostrar. Depois, é só escrever o nome e entrar na turma.</p>
+                </li>
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--green"><svg aria-hidden="true"><use href="#i-mic" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 3</span>
+                    <h4 data-speak-text>Ouça e repita</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: ouça e repita"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>Toque em ouvir e o app fala a palavra. Repita em voz alta e toque no ✓ quando terminar.</p>
+                </li>
+                <li class="card card--grid" data-speak-scope>
+                  <span class="icon-circle icon-circle--yellow"><svg aria-hidden="true"><use href="#i-star" /></svg></span>
+                  <div class="card__head">
+                    <span class="card__kicker" data-speak-text>Passo 4</span>
+                    <h4 data-speak-text>Comemore!</h4>
+                  </div>
+                  <button class="btn-speak" type="button" aria-label="Ouvir: comemore"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+                  <p class="card__text" data-speak-text>No fim, aparece a tela de Parabéns, com som de comemoração.</p>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 4. PARA QUEM É ============ -->
+      <section id="para-quem" class="section" aria-labelledby="para-quem-title">
+        <div class="container container--wide">
+          <h2 id="para-quem-title" class="section__title"><span class="light">Para</span> quem é</h2>
+          <div class="grid-3">
+            <article class="card card--stack" data-speak-scope>
+              <span class="icon-circle icon-circle--blue icon-circle--lg"><svg aria-hidden="true"><use href="#i-book" /></svg></span>
+              <div class="card__body">
+                <h3 data-speak-text>Professores e escolas</h3>
+                <p data-speak-text>Para quem alfabetiza e quer um jeito simples de a turma praticar a leitura em voz alta.</p>
+              </div>
+              <button class="btn-speak" type="button" aria-label="Ouvir: professores e escolas"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+            </article>
+            <article class="card card--stack" data-speak-scope>
+              <span class="icon-circle icon-circle--orange icon-circle--lg"><svg aria-hidden="true"><use href="#i-users" /></svg></span>
+              <div class="card__body">
+                <h3 data-speak-text>Turmas de EJA</h3>
+                <p data-speak-text>Para jovens e adultos aprendendo a ler. A tela mostra só a palavra e o botão de ouvir, sem textos difíceis.</p>
+              </div>
+              <button class="btn-speak" type="button" aria-label="Ouvir: turmas de EJA"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+            </article>
+            <article class="card card--stack" data-speak-scope>
+              <span class="icon-circle icon-circle--green icon-circle--lg"><svg aria-hidden="true"><use href="#i-heart" /></svg></span>
+              <div class="card__body">
+                <h3 data-speak-text>Crianças e famílias</h3>
+                <p data-speak-text>Para crianças em alfabetização. Com o código da turma, pais e responsáveis podem ajudar a praticar em casa.</p>
+              </div>
+              <button class="btn-speak" type="button" aria-label="Ouvir: crianças e famílias"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 5. FEITO PARA SER SIMPLES ============ -->
+      <section id="simples" class="section section--tint" aria-labelledby="simples-title">
+        <div class="container container--wide">
+          <h2 id="simples-title" class="section__title"><span class="light">Feito para</span> ser simples</h2>
+          <div class="grid-2">
+            <article class="feature">
+              <span class="icon-circle icon-circle--blue"><svg aria-hidden="true"><use href="#i-unlock" /></svg></span>
+              <div><h3>Sem conta, sem senha</h3><p>O aluno escaneia o código e já começa. Ninguém fica para trás porque esqueceu a senha.</p></div>
+            </article>
+            <article class="feature">
+              <span class="icon-circle icon-circle--orange"><svg aria-hidden="true"><use href="#i-qr" /></svg></span>
+              <div><h3>QR Code é a chave da turma</h3><p>Fácil de projetar na lousa, imprimir ou mandar no grupo da turma.</p></div>
+            </article>
+            <article class="feature">
+              <span class="icon-circle icon-circle--green"><svg aria-hidden="true"><use href="#i-speaker" /></svg></span>
+              <div><h3>Voz em português do Brasil</h3><p>O app usa a voz do próprio aparelho para falar cada palavra.</p></div>
+            </article>
+            <article class="feature">
+              <span class="icon-circle icon-circle--yellow"><svg aria-hidden="true"><use href="#i-sliders" /></svg></span>
+              <div><h3>Professor no controle</h3><p>Cria, edita e exclui turmas e palavras, e vê quem entrou.</p></div>
+            </article>
+            <article class="feature">
+              <span class="icon-circle icon-circle--blue"><svg aria-hidden="true"><use href="#i-phone" /></svg></span>
+              <div><h3>Tela limpa para o aluno</h3><p>Só a palavra e o botão de ouvir. Nada de menus ou termos técnicos.</p></div>
+            </article>
+          </div>
+
+          <aside class="note card--grid" data-speak-scope aria-labelledby="note-title">
+            <span class="icon-circle icon-circle--sky"><svg aria-hidden="true"><use href="#i-info" /></svg></span>
+            <h3 id="note-title" class="card__head" data-speak-text>Bom saber</h3>
+            <button class="btn-speak" type="button" aria-label="Ouvir: bom saber"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+            <p class="card__text" data-speak-text>O app ainda não corrige a pronúncia sozinho. Hoje, é uma prática guiada: o aluno ouve, repete e confirma que repetiu tocando no ✓, com o acompanhamento do professor.</p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============ 6. BAIXAR (APK pelo GitHub) ============ -->
+      <section id="baixar" class="section section--download" aria-labelledby="baixar-title">
+        <div class="container">
+          <span class="badge"><span class="badge__dot" aria-hidden="true"></span>Versão de testes</span>
+          <h2 id="baixar-title" class="section__title section__title--inverse">Baixe o app no seu Android</h2>
+          <p class="lead">O Palavra Falada ainda não está na Google Play. Por enquanto, você baixa o aplicativo direto daqui. É de graça.</p>
+
+          <div class="download-row">
+            <a class="btn btn--download" data-download href="#">
+              <svg aria-hidden="true"><use href="#i-android" /></svg>
+              <span class="btn__label">Baixar app<small>para Android · grátis</small></span>
+            </a>
+            <button class="btn-speak btn-speak--lg" type="button" aria-label="Ouvir explicação"
+              data-speak="Toque no botão verde para baixar o aplicativo.">
+              <svg aria-hidden="true"><use href="#i-speaker" /></svg>
+            </button>
+          </div>
+
+          <div class="install" data-speak-scope>
+            <div class="install__head">
+              <h3 id="instalar-title" data-speak-text>Como instalar</h3>
+              <button class="btn-speak" type="button" aria-label="Ouvir: como instalar"><svg aria-hidden="true"><use href="#i-speaker" /></svg></button>
+            </div>
+            <ol class="install__steps" data-speak-text>
+              <li>Toque em <strong>Baixar app</strong> e espere o download terminar.</li>
+              <li>Abra o arquivo baixado. Se o celular pedir, permita instalar apps desta fonte.</li>
+              <li>Toque em <strong>Instalar</strong>. Pronto!</li>
+            </ol>
+            <p class="install__note" data-speak-text>O celular pode mostrar um aviso porque o app não veio da Google Play. Isso é normal em versões de teste.</p>
+          </div>
+
+          <p class="small">Só para Android, por enquanto.</p>
+        </div>
+      </section>
+
+      <!-- ============ 7. SOBRE O PROJETO ============ -->
+      <section id="sobre" class="section" aria-labelledby="sobre-title">
+        <div class="container">
+          <h2 id="sobre-title" class="section__title"><span class="light">Sobre o</span> projeto</h2>
+          <div class="card card--intro">
+            <div class="card__body">
+              <p>O Palavra Falada é um <strong>trabalho de faculdade</strong> do curso de <strong>Ciência da Computação</strong> do <strong>Centro Universitário Maurício de Nassau</strong>.</p>
+              <p>Não é um protótipo só de telas: o app já funciona de ponta a ponta, do cadastro do professor até a tela de Parabéns do aluno.</p>
+              <p class="tech"><svg aria-hidden="true"><use href="#i-code" /></svg>Feito com React Native e Expo.</p>
+            </div>
+          </div>
+
+          <h3 class="team__title">Quem fez</h3>
+          <ul class="team">
+            <li>Eduardo Martins da Silva</li>
+            <li>Jorge Luiz da Silva Magalhães</li>
+            <li>Thiago Victor Dias Macêdo</li>
+            <li>Heitor Oliveira Terto</li>
+            <li>João Claudio Bezerra Silva Rodrigues</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <svg class="footer__logo" aria-hidden="true"><use href="#i-logo" /></svg>
+      <p><strong>Palavra Falada</strong> · projeto acadêmico</p>
+      <p>Centro Universitário Maurício de Nassau</p>
+      <p>Ciência da Computação · 2026</p>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

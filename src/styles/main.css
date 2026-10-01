@@ -1,0 +1,852 @@
+/* ==========================================================
+   Estilos globais — mobile first (pensado para telas de ~360px)
+   Visual baseado nas telas do app Palavra Falada (pasta designer/).
+   ========================================================== */
+
+:root {
+  --blue: #2a6fc9; /* botões e destaques */
+  --blue-dark: #1b3f73; /* títulos e texto */
+  --blue-soft: #e3f1fc; /* fundo de campos */
+  --sky: #bfe2f7; /* ondas */
+  --yellow: #f6b81a;
+  --orange: #f5a332;
+  --green: #43a047;
+  --bg: #f6f9fd;
+  --white: #ffffff;
+
+  --font: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --touch-min: 48px; /* alvo de toque mínimo recomendado */
+  --shadow: 0 6px 18px rgba(27, 63, 115, 0.16);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 1.25rem; /* 20px: letra grande por padrão */
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--blue-dark);
+  background: var(--bg);
+}
+
+/* ---------- Palco 3D (tela cheia) ---------- */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh; /* dvh considera a barra do navegador no celular */
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg) 60%, #eaf4fc 100%);
+}
+
+.waves {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  pointer-events: none;
+}
+.waves--top {
+  top: 0;
+}
+.waves--bottom {
+  bottom: 0;
+}
+
+.canvas-holder {
+  position: absolute;
+  inset: 0;
+}
+.canvas-holder canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation; /* evita o atraso do "duplo toque para zoom" */
+}
+
+/* ---------- Barra do topo: logo + Pular ---------- */
+.topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand__logo {
+  width: 48px;
+  height: 44px;
+}
+.brand__name {
+  font-weight: 900;
+  font-size: 1.05rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--blue-dark);
+}
+
+.btn-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  min-width: var(--touch-min);
+  padding: 0 22px;
+  border: 3px solid var(--blue);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--blue);
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.3s ease;
+}
+.btn-skip svg {
+  width: 26px;
+  height: 26px;
+}
+.btn-skip:active {
+  transform: scale(0.95);
+}
+.btn-skip:focus-visible {
+  outline: 4px solid var(--yellow);
+  outline-offset: 3px;
+}
+.btn-skip[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   Texto da abertura (fica na parte de baixo do palco)
+   ========================================================== */
+/* O texto do site e o painel do jogo ficam no MESMO lugar (grid-area 1/1,
+   um "empilhado" no outro). A altura do bloco é a do maior dos dois, assim a
+   cena 3D não "pula" quando um troca pelo outro. */
+.stage-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  padding: 0 16px max(24px, env(safe-area-inset-bottom));
+  text-align: center;
+}
+/* O bloco em si deixa o toque "passar" para o 3D (as letras do jogo podem
+   ficar atrás dele); só o conteúdo VISÍVEL recebe toques. */
+.stage-bottom {
+  pointer-events: none;
+}
+.hero-copy,
+.game-panel {
+  pointer-events: auto;
+  grid-area: 1 / 1;
+  align-self: end;
+  transition: opacity 0.3s ease, visibility 0.3s;
+}
+
+/* Modos do palco (definidos pelo JavaScript em data-mode).
+   Sem JavaScript, o texto do site aparece normalmente. */
+.game-panel,
+.stage[data-mode='intro'] .hero-copy,
+.stage[data-mode='game'] .hero-copy {
+  visibility: hidden;
+  opacity: 0;
+}
+.stage[data-mode='game'] .game-panel {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ---------- Painel do jogo ---------- */
+.game-panel {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  align-items: center;
+  gap: 12px 20px;
+}
+.game-picture {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+.game-picture__emoji {
+  font-size: 64px;
+  line-height: 1;
+}
+.game-listen.is-inviting {
+  animation: invite 1.1s ease-in-out infinite;
+}
+@keyframes invite {
+  50% {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 10px rgba(42, 111, 201, 0.25);
+  }
+}
+.game-progress {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.game-progress li {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--sky);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.game-progress li.is-current {
+  background: var(--blue);
+  transform: scale(1.25);
+}
+.game-progress li.is-done {
+  background: var(--green);
+}
+
+/* ---------- Mãozinha 👆 ---------- */
+.hand-hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  pointer-events: none; /* não atrapalha o toque na letra */
+}
+.hand-hint[hidden] {
+  display: none;
+}
+.hand-hint span {
+  display: block;
+  font-size: 56px;
+  line-height: 1;
+  /* a ponta do dedo do emoji fica em cima, no meio: alinhamos esse ponto */
+  transform: translate(-50%, 4px);
+  animation: tap 0.9s ease-in-out infinite;
+  filter: drop-shadow(0 4px 6px rgba(27, 63, 115, 0.3));
+}
+@keyframes tap {
+  50% {
+    transform: translate(-50%, 18px) scale(0.92);
+  }
+}
+.hero-copy__title {
+  margin: 0 auto;
+  max-width: 14em;
+  font-size: 1.85rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.hl {
+  color: var(--blue);
+}
+.hero-copy__sub {
+  margin: 8px auto 16px;
+  max-width: 22em;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.hero-copy__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+/* "Jogar" ocupa a linha de cima (ao lado do 🔊); "Conhecer o app" vai embaixo */
+.btn--play {
+  flex: 1;
+  max-width: 300px;
+  min-height: 72px;
+  font-size: 1.45rem;
+  font-weight: 900;
+}
+.btn--play svg {
+  width: 30px;
+  height: 30px;
+}
+.btn--secondary {
+  flex-basis: 100%;
+  max-width: 384px;
+  min-height: 52px;
+  border: 3px solid var(--blue);
+  background: var(--white);
+  color: var(--blue);
+}
+
+/* ==========================================================
+   Botões
+   ========================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.btn svg {
+  width: 26px;
+  height: 26px;
+  flex: none;
+}
+.btn:active {
+  transform: scale(0.96);
+}
+.btn:focus-visible,
+.btn-speak:focus-visible {
+  outline: 4px solid var(--yellow);
+  outline-offset: 3px;
+}
+.btn--primary {
+  border: 0;
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: 0 6px 16px rgba(42, 111, 201, 0.35);
+}
+
+/* Botão de som: quadrado azul arredondado, igual ao da tela "Parabéns" do app */
+.btn-speak {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--blue);
+  color: var(--white);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.btn-speak svg {
+  width: 28px;
+  height: 28px;
+}
+.btn-speak:active {
+  transform: scale(0.92);
+}
+.btn-speak.is-speaking {
+  animation: pulse 0.8s ease-in-out infinite alternate;
+}
+.btn-speak[hidden] {
+  display: none;
+}
+.btn-speak--lg {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+}
+.btn-speak--lg svg {
+  width: 38px;
+  height: 38px;
+}
+@keyframes pulse {
+  to {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px rgba(246, 184, 26, 0.45);
+  }
+}
+
+/* ==========================================================
+   Seções
+   ========================================================== */
+.section {
+  padding: 56px 0;
+}
+.section--tint {
+  background: var(--blue-soft);
+}
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.container--wide {
+  max-width: 1040px;
+}
+
+/* Título em dois tons, como "LOGIN DO / PROFESSOR" no app */
+.section__title {
+  margin: 0 0 24px;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.section__title .light {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+.section__title--inverse {
+  color: var(--white);
+}
+
+/* ---------- Cartões ---------- */
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 16px;
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+.card__body {
+  flex: 1;
+  min-width: 0;
+}
+.card__body h3,
+.card__body h4 {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+.card__body p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.card__body p + p {
+  margin-top: 10px;
+}
+.card__kicker {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+.card--intro .card__body p {
+  font-size: 1.2rem;
+}
+.code {
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--blue-soft);
+  letter-spacing: 0.08em;
+}
+
+/* Cartão em grade: [ícone] [título] [🔊] na primeira linha,
+   texto ocupando a largura toda embaixo (não fica espremido no celular) */
+.card--grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 14px;
+}
+.card--no-icon {
+  grid-template-columns: 1fr auto;
+}
+.card__head {
+  margin: 0;
+}
+.card__head h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+.card__text {
+  grid-column: 1 / -1;
+  margin: 12px 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.card--intro .card__head,
+.card--intro .card__text {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Círculo colorido com ícone branco (como na lista de Tarefas do app) */
+.icon-circle {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: var(--white);
+}
+.icon-circle svg {
+  width: 28px;
+  height: 28px;
+}
+.icon-circle--lg {
+  width: 72px;
+  height: 72px;
+}
+.icon-circle--lg svg {
+  width: 36px;
+  height: 36px;
+}
+.icon-circle--blue {
+  background: var(--blue);
+}
+.icon-circle--orange {
+  background: var(--orange);
+  color: var(--blue-dark);
+}
+.icon-circle--yellow {
+  background: var(--yellow);
+  color: var(--blue-dark);
+}
+.icon-circle--green {
+  background: var(--green);
+}
+.icon-circle--sky {
+  background: var(--sky);
+  color: var(--blue-dark);
+}
+
+/* ---------- Destaques (chips) ---------- */
+.chips {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.chip svg {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  color: var(--blue);
+}
+
+/* ---------- Como funciona ---------- */
+.tracks {
+  display: grid;
+  gap: 36px;
+}
+.track__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+.track__title svg {
+  width: 30px;
+  height: 30px;
+  color: var(--blue);
+}
+.steps {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Para quem é ---------- */
+.grid-3,
+.grid-2 {
+  display: grid;
+  gap: 16px;
+}
+.card--stack {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 18px;
+}
+.card--stack .card__body {
+  flex: none;
+}
+
+/* ---------- Feito para ser simples ---------- */
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.feature h3 {
+  margin: 4px 0 2px;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+.feature p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.note {
+  margin-top: 28px;
+  padding: 18px 16px;
+  border: 3px dashed var(--sky);
+  border-radius: 20px;
+  background: var(--white);
+}
+.note h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+/* ---------- Em fase de testes ---------- */
+.section--download {
+  background: var(--blue-dark);
+  color: var(--white);
+  text-align: center;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--blue-dark);
+  font-size: 1rem;
+  font-weight: 900;
+}
+.badge__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--blue-dark);
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+.lead {
+  margin: 0 0 28px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.download-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+/* Botão principal: verde ENORME (verde escuro para ter contraste com o texto branco) */
+.btn--download {
+  flex: 1;
+  max-width: 340px;
+  min-height: 80px;
+  padding: 0 18px;
+  gap: 8px;
+  white-space: nowrap;
+  background: #2e7d32;
+  color: var(--white);
+  font-size: 1.4rem;
+  font-weight: 900;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+.btn--download svg {
+  width: 34px;
+  height: 34px;
+}
+.section--download .btn-speak {
+  background: var(--white);
+  color: var(--blue);
+}
+.btn__label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+.btn__label small {
+  font-size: 0.95rem;
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+/* Passo a passo para instalar o APK */
+.install {
+  margin-top: 28px;
+  padding: 18px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  text-align: left;
+}
+.install__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.install__head h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+.install__steps {
+  margin: 12px 0 0;
+  padding-left: 1.4em;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.install__steps li + li {
+  margin-top: 8px;
+}
+.install__note {
+  margin: 14px 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+.small {
+  margin: 18px 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* ---------- Sobre ---------- */
+.tech {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue);
+}
+.tech svg {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+.team__title {
+  margin: 28px 0 12px;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+.team {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.team li {
+  padding: 8px 18px;
+  border-radius: 20px; /* não 999px: nomes longos podem quebrar em 2 linhas */
+  background: var(--blue-soft);
+  font-weight: 800;
+}
+
+/* ---------- Rodapé ---------- */
+.footer {
+  padding: 32px 16px max(32px, env(safe-area-inset-bottom));
+  background: var(--sky);
+  text-align: center;
+  font-size: 1rem;
+}
+.footer p {
+  margin: 2px 0;
+}
+.footer__logo {
+  width: 56px;
+  height: 50px;
+}
+
+/* Celular: a frase menor do título some para sobrar espaço para o 3D.
+   (O 🔊 continua lendo essa frase: o texto ainda está na página.) */
+@media (max-width: 480px) and (max-height: 860px) {
+  .hero-copy__sub {
+    display: none;
+  }
+  .hero-copy__title {
+    margin-bottom: 14px;
+  }
+}
+
+/* ==========================================================
+   Telas maiores (tablet / computador)
+   ========================================================== */
+@media (min-width: 720px) {
+  .hero-copy__title {
+    font-size: 2.6rem;
+  }
+  .chips {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 32px;
+  }
+  .section {
+    padding: 80px 0;
+  }
+  .section__title {
+    font-size: 2.6rem;
+  }
+}
+@media (min-width: 960px) {
+  .tracks {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Quem pediu menos movimento no sistema não vê animações de CSS */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
