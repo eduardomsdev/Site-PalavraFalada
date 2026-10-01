@@ -152,7 +152,7 @@ O app Palavra Falada (React Native + Expo) já funciona de ponta a ponta: o prof
 - Thiago Victor Dias Macêdo
 - Heitor Oliveira Terto
 - João Claudio Bezerra Silva Rodrigues
-
+- Lucas Roberto Oliveira
 ## 📄 Licença
 
 Distribuído sob a licença [MIT](LICENSE).
